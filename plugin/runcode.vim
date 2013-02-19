@@ -21,6 +21,7 @@ fu! DoRunCode()
 
   let curfile = bufname("%")
   below new
+  resize 15
 
   execute "%!".ex." ".curfile
   "call delete(tmpfile)
