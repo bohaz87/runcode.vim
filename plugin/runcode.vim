@@ -27,6 +27,7 @@ fu! DoRunCode()
   "call delete(tmpfile)
 
   setlocal previewwindow ro nomodifiable nomodified
+  setlocal buftype=nofile
 
   winc p
 endfu
