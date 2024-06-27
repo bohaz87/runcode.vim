@@ -1,3 +1,8 @@
+if exists('g:loaded_runcode')
+  finish
+endif
+let g:loaded_runcode= 1
+
 fu! DoRunCode()  
   execute "w"
   pclose! " force preview window closed
