@@ -42,6 +42,20 @@ fu! DoRunCode()
     else
       let ex = "python"
     endif
+  elseif &ft == "typescript"
+    " 如果文件类型是 typescript，先编译再执行
+    silent execute "!tsc ".expand("%:p")
+    if v:shell_error
+      echo "TypeScript 编译失败"
+      return
+    endif
+    let build_file = substitute(expand("%:p"), '\v(.+)\.ts$', 'build/\1.js', '')
+    if !filereadable(build_file)
+      echo "编译后的文件未找到: ".build_file
+      return
+    endif
+    let ex = "node"
+    let curfile = build_file
   elseif &ft == "vim"
     " 如果文件类型是 vim，执行 source %，重新加载当前 Vim 脚本文件并返回
     source %
@@ -52,7 +66,7 @@ fu! DoRunCode()
   endif
 
   " 在当前窗口下方打开一个新窗口并调整高度
-  botright 15new
+  botright 10new
 
   " 在新窗口中执行命令 ex（前面根据文件类型设置的命令）并传入当前文件名 curfile
   " %! 表示将命令输出重定向到当前缓冲区
@@ -62,6 +76,11 @@ fu! DoRunCode()
   setlocal previewwindow ro nomodifiable nomodified
   " 将新窗口的缓冲区类型设为 nofile，表示这个缓冲区不对应任何文件
   setlocal buftype=nofile
+
+  set wrap
+
+  " 滚动到预览窗口底部
+  normal! G
 
   " 切换回上一个窗口
   winc p
